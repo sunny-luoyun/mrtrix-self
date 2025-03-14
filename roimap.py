@@ -93,7 +93,13 @@ def roi_run_menu(path, sub):
                                 csv_file = f'{path}/Results/Map/{i}_{alert_model}_length_MAP.csv'  # CSV文件路径
                                 NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
-                                mat_file = f'{path}/Results/Map/{i}_{alert_model}_length_MAP.mat'  # 输出的MAT文件路径
+                                process = os.popen(
+                                    f'mkdir -p {path}/Results/GlobalMap/length')
+                                output = process.read()
+                                print(output)
+                                process.close()
+
+                                mat_file = f'{path}/Results/GlobalMap/length/{i}_{alert_model}_length_MAP.mat'  # 输出的MAT文件路径
                                 savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
 
                                 if brain_mask == '':
@@ -113,7 +119,13 @@ def roi_run_menu(path, sub):
                                     csv_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv'  # CSV文件路径
                                     NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
-                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.mat'
+                                    process = os.popen(
+                                        f'mkdir -p {path}/Results/ROIMap/length')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+
+                                    mat_file = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
 # iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
@@ -129,7 +141,13 @@ def roi_run_menu(path, sub):
                                 csv_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_MAP.csv'  # CSV文件路径
                                 NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
-                                mat_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_MAP.mat'  # 输出的MAT文件路径
+                                process = os.popen(
+                                    f'mkdir -p {path}/Results/GlobalMap/invlength')
+                                output = process.read()
+                                print(output)
+                                process.close()
+
+                                mat_file = f'{path}/Results/GlobalMap/invlength/{i}_{alert_model}_invlength_MAP.mat'  # 输出的MAT文件路径
                                 savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
 
                                 if brain_mask == '':
@@ -149,7 +167,13 @@ def roi_run_menu(path, sub):
                                     csv_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.csv'  # CSV文件路径
                                     NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
-                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.mat'
+                                    process = os.popen(
+                                        f'mkdir -p {path}/Results/ROIMap/invlength')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+
+                                    mat_file = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
                             elif choice == 3:
                                 print(f"{i}invnodevol矩阵")
@@ -161,7 +185,13 @@ def roi_run_menu(path, sub):
                                 csv_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.csv'  # CSV文件路径
                                 NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
-                                mat_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.mat'  # 输出的MAT文件路径
+                                process = os.popen(
+                                    f'mkdir -p {path}/Results/GlobalMap/invnodevol')
+                                output = process.read()
+                                print(output)
+                                process.close()
+
+                                mat_file = f'{path}/Results/GlobalMap/invnodevol/{i}_{alert_model}_invnodevol_MAP.mat'  # 输出的MAT文件路径
                                 savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
 
                                 if brain_mask == '':
@@ -181,7 +211,13 @@ def roi_run_menu(path, sub):
                                     csv_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv'  # CSV文件路径
                                     NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
-                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.mat'
+                                    process = os.popen(
+                                        f'mkdir -p {path}/Results/ROIMap/invnodevol')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+
+                                    mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
                             elif choice == 4:
                                     pass
