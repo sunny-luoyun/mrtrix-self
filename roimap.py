@@ -7,7 +7,7 @@ def show_menu():
     print("1. length 按纤维的长度对连接体边缘的每个贡献进行缩放")
     print("2. invlength  通过纤维长度的逆向对连接体边缘的每个贡献进行缩放")
     print("3. invnodevol 通过两个节点卷的逆数来缩放对连接体边缘的每个贡献")
-    print("4. FA 生成矩阵其中连接值为“平均FA”")
+    print("4. FA 生成矩阵其中连接值为“平均FA”(没做好)")
     print("0. 返回上一级")
 
 def get_user_choices():
@@ -113,17 +113,78 @@ def roi_run_menu(path, sub):
                                     csv_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv'  # CSV文件路径
                                     NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
-                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.mat'  # 输出的MAT文件路径
-                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
+                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.mat'
+                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
 # iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 
                             elif choice == 2:
-                                pass
+
+                                print(f"{i}invlength矩阵")
+                                process = os.popen(
+                                    f'tck2connectome -symmetric -scale_invlength {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invlength.csv -force')
+                                output = process.read()
+                                print(output)
+                                process.close()
+                                csv_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_MAP.csv'  # CSV文件路径
+                                NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
+
+                                mat_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_MAP.mat'  # 输出的MAT文件路径
+                                savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
+
+                                if brain_mask == '':
+                                    pass
+                                else:
+                                    process = os.popen(
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_assign_invlength.csv -files single {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invlength_ROIMAP.tck -force')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+
+                                    process = os.popen(
+                                        f'tck2connectome -symmetric -scale_invlength {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invlength_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.csv -force')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+                                    csv_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.csv'  # CSV文件路径
+                                    NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
+
+                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.mat'
+                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
                             elif choice == 3:
-                                pass
+                                print(f"{i}invnodevol矩阵")
+                                process = os.popen(
+                                    f'tck2connectome -symmetric -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invnodevol.csv -force')
+                                output = process.read()
+                                print(output)
+                                process.close()
+                                csv_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.csv'  # CSV文件路径
+                                NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
+
+                                mat_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.mat'  # 输出的MAT文件路径
+                                savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
+
+                                if brain_mask == '':
+                                    pass
+                                else:
+                                    process = os.popen(
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_assign_invnodevol.csv -files single {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invnodevol_ROIMAP.tck -force')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+
+                                    process = os.popen(
+                                        f'tck2connectome -symmetric -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invnodevol_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+                                    csv_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv'  # CSV文件路径
+                                    NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
+
+                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.mat'
+                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
                             elif choice == 4:
-                                pass
+                                    pass
 
                         # 记录结束时间
                         end_time = time.time()
