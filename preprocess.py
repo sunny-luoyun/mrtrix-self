@@ -79,8 +79,6 @@ def prep(path, list):
         print(output)
         process.close()
 
-        '''maskfilter input.mif dilate output.mif -npass <number>'''
-
         # 记录结束时间
         end_time = time.time()
         elapsed_time = end_time - start_timee

@@ -220,6 +220,35 @@ def roi_run_menu(path, sub):
                                     mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
                             elif choice == 4:
+                                print(f"{i}FA矩阵")
+                                '''tcksample tracks.tck FA.mif mean_FA_per_streamline.csv -stat_tck mean
+                                    tck2connectome tracks.tck nodes.mif mean_FA_connectome.csv -scale_file mean_FA_per_streamline.csv -stat_edge mean
+                                '''
+                                process = os.popen(
+                                    f'tcksample {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/Results/dt/{i}_FA.mif {path}/Results/Map/{i}_mean_FA_per_streamline.csv -stat_tck mean -force')
+                                output = process.read()
+                                print(output)
+                                process.close()
+                                process = os.popen(
+                                    f'tck2connectome {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_mean_FA_connectome.csv -scale_file {path}/Results/Map/{i}_mean_FA_per_streamline.csv -stat_edge mean -force')
+                                output = process.read()
+                                print(output)
+                                process.close()
+                                csv_file = f'{path}/Results/Map/{i}_mean_FA_per_streamline.csv'  # CSV文件路径
+                                NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
+
+                                process = os.popen(
+                                    f'mkdir -p {path}/Results/GlobalMap/FA')
+                                output = process.read()
+                                print(output)
+                                process.close()
+
+                                mat_file = f'{path}/Results/GlobalMap/FA/{i}_{alert_model}_FA_MAP.mat'  # 输出的MAT文件路径
+                                savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
+
+                                if brain_mask == '':
+                                    pass
+                                else:
                                     pass
 
                         # 记录结束时间
