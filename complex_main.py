@@ -1,11 +1,14 @@
-import os, preprocess, subprocess, json, math
-from datetime import datetime
-from dt_r import run_menu
-from confiber import menu_c
-from fsl_cut import fsl
-from FoD import fod
+import json
+import math
+import os
+import preprocess
+import subprocess
 import time
-from aal import aal_model
+from datetime import datetime
+
+from FoD import fod
+from dt_r import run_menu
+from fsl_cut import fsl
 from roimap import roi_run_menu
 
 

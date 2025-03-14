@@ -1,6 +1,9 @@
-import os, time
+import os
+import time
+
 import numpy as np
 from scipy.io import savemat
+
 
 def show_menu():
     print("请选择需要计算生成矩阵的指标（输入对应的数字，用空格分隔）：")
