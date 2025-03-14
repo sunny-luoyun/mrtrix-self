@@ -76,7 +76,7 @@ def roi_run_menu(path, sub):
                         process.close()
 
                         process = os.popen(
-                            f'mrconvert {path}/work/{i}/{alert_model}_change_int.nii.gz {path}/work/{i}/{alert_model}_change.nii.gz -datatype int32')
+                            f'mrconvert {path}/work/{i}/{alert_model}_change_int.nii.gz {path}/work/{i}/{alert_model}_change.nii.gz -datatype int32 -force')
                         output = process.read()
                         print(output)
                         process.close()
@@ -86,7 +86,7 @@ def roi_run_menu(path, sub):
                             if choice == 1:
                                 print(f"{i}length矩阵")
                                 process = os.popen(
-                                    f'tck2connectome -symmetric -scale_length {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_length.csv')
+                                    f'tck2connectome -symmetric -scale_length {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_length.csv -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
@@ -94,17 +94,28 @@ def roi_run_menu(path, sub):
                                 NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
                                 mat_file = f'{path}/Results/Map/{i}_{alert_model}_length_MAP.mat'  # 输出的MAT文件路径
-                                savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件
+                                savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
 
                                 if brain_mask == '':
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_assign_length.csv -files single {path}/work/{i}/{alert_model}_length_ROIMAP.tck')
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_assign_length.csv -files single {path}/Results/TCK_and_SIFT/{i}_{alert_model}_length_ROIMAP.tck -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
-                                
+
+                                    process = os.popen(
+                                        f'tck2connectome -symmetric -scale_length {path}/Results/TCK_and_SIFT/{i}_{alert_model}_length_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv -force')
+                                    output = process.read()
+                                    print(output)
+                                    process.close()
+                                    csv_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv'  # CSV文件路径
+                                    NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
+
+                                    mat_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.mat'  # 输出的MAT文件路径
+                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
+
 # iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 
                             elif choice == 2:
