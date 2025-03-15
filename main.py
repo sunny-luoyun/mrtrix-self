@@ -6,11 +6,10 @@ def menu():
     print("1. 选项一：单一被试处理")
     print("2. 选项二：批量被试处理")
     print("3. 选项三：结果查看(mrview)")
-    print("4. 选项四：参数设定")
     print("0. 选项零：退出程序")
     print("===========================")
 
-
+'''
 def sysinfo():
     while True:
         print("=======================================================================================================")
@@ -27,7 +26,7 @@ def sysinfo():
         elif choice1 == "2":
             file_path = "sys.json"
             c = input('输入freesurfer路径:')
-            update_parameter(file_path, 'freepath', c)
+            update_parameter(file_path, 'freepath', c)'''
 
 def main():
     while True:
@@ -43,14 +42,14 @@ def main():
             output = process.read()
             print(output)
             process.close()
-        elif choice == "4":
-            sysinfo()
+        # elif choice == "4":
+           # sysinfo()
         elif choice == "0":
             break
         else:
             print("无效的选项，请重新输入！")
 
-
+'''
 def update_parameter(file_path, key, new_value):
     try:
         # 读取现有参数
@@ -89,6 +88,7 @@ def load_specific_parameters(file_path, *keys):
     except json.JSONDecodeError:
         print(f"文件 {file_path} 格式错误！")
         return {}
+'''
 
 
 if __name__ == "__main__":

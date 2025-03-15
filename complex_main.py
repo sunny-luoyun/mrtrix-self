@@ -1,8 +1,9 @@
-import json, os, preprocess
+import json, os
 from FoD import fod
 from dt_r import run_menu
 from fsl_cut import fsl
 from roimap import roi_run_menu
+from preprocess import prep
 
 
 def load_specific_parameters(file_path, *keys):
@@ -25,160 +26,53 @@ def load_specific_parameters(file_path, *keys):
 
 def menu():
     print("\n======== 以下是dwi批量处理界面 ========")
-    print("1. 选项一：预处理")
-    print("2. 选项二：切割脑区（fsl）")
-    print("3. 选项三：提取弥散指标")
-    print("4. 选项四：全脑纤维重建")
-    print("5. 选项五：基于种子点纤维重建（没做好）")
-    print("6. 选项六：基于纤维的脑网络构建")
-    print("7. 选项七：使用说明")
-    print("0. 选项零：返回上一级")
+    print("1. 预处理")
+    print("2. 切割脑区（fsl）")
+    print("3. 提取弥散指标")
+    print("4. 全脑纤维重建")
+    print("5. 基于种子点纤维重建（未完成）")
+    print("6. 基于纤维的脑网络构建")
+    print("7. 使用说明")
+    print("0. 返回上一级")
     print("=====================================")
 
-def option_1():
+
+def get_input_path():
     while True:
-        print("======以下是预处理界面======")
-        input_path = input('请输入工作路径(输入0返回上一级):')
+        input_path = input('请输入工作路径(输入0返回上一级): ')
         if input_path == "0":
-            break
-        print(f'你的工作路径是：{input_path}')
-        choice1 = input('是否要继续（y/n）：')
-        if choice1 == 'y':
-            try:
-                print('工作路径中有以下被试：')
-                li = []
-                full = input_path + '/pre'
-                for item in sorted(os.listdir(full)):  # 使用 sorted() 排序
-                    li.append(item)
-                    print(item)
-
-            except FileNotFoundError:
-                print('请输入正确的路径!!!!')
-                continue
-
-            choice2 = input('是否要继续（y/n）：')
-            if choice2 == 'y':
-                print('开始预处理')
-                preprocess.prep(input_path,li)
-                break
-            else:
-                continue
+            return None
+        try:
+            full_path = os.path.join(input_path, 'pre')
+            subjects = sorted(os.listdir(full_path))
+            print(f'工作路径中有以下被试：')
+            for subject in subjects:
+                print(subject)
+            return input_path, subjects
+        except FileNotFoundError:
+            print('请输入正确的路径!!!!')
 
 
-        else:
-            continue
+def option_preprocess(input_path, subjects):
+    print('开始预处理')
+    prep(input_path, subjects)
 
-def option_3():
-    while True:
-        print("======以下是提取弥散指标界面======")
-        input_path = input('请输入工作路径(输入0返回上一级):')
-        if input_path == "0":
-            break
-        print(f'你的工作路径是：{input_path}')
-        choice1 = input('是否要继续（y/n）：')
-        if choice1 == 'y':
-            try:
-                print('工作路径中有以下被试：')
-                li = []
-                full = input_path + '/pre'
-                for item in sorted(os.listdir(full)):  # 使用 sorted() 排序
-                    li.append(item)
-                    print(item)
 
-            except FileNotFoundError:
-                print('请输入正确的路径!!!!')
-                continue
+def option_fsl(input_path, subjects):
+    fsl(input_path, subjects)
 
-            choice2 = input('是否要继续（y/n）：')
-            if choice2 == 'y':
-                run_menu(input_path, li)
-                continue
-            else:
-                continue
 
-def option_4():
-    while True:
-        print("======以下是纤维重建界面======")
-        input_path = input('请输入工作路径(输入0返回上一级):')
-        if input_path == "0":
-            break
-        print(f'你的工作路径是：{input_path}')
-        choice1 = input('是否要继续（y/n）：')
-        if choice1 == 'y':
-            try:
-                print('工作路径中有以下被试：')
-                li = []
-                full = input_path + '/pre'
-                for item in sorted(os.listdir(full)):  # 使用 sorted() 排序
-                    li.append(item)
-                    print(item)
+def option_extract_metrics(input_path, subjects):
+    run_menu(input_path, subjects)
 
-            except FileNotFoundError:
-                print('请输入正确的路径!!!!')
-                continue
 
-            choice2 = input('是否要继续（y/n）：')
-            if choice2 == 'y':
-                fod(input_path, li)
-                continue
-            else:
-                continue
+def option_fiber_reconstruction(input_path, subjects):
+    fod(input_path, subjects)
 
-def option_6():
-    while True:
-        print("======以下是基于纤维的脑网络构建界面======")
-        input_path = input('请输入工作路径(输入0返回上一级):')
-        if input_path == "0":
-            break
-        print(f'你的工作路径是：{input_path}')
-        choice1 = input('是否要继续（y/n）：')
-        if choice1 == 'y':
-            try:
-                print('工作路径中有以下被试：')
-                li = []
-                full = input_path + '/pre'
-                for item in sorted(os.listdir(full)):  # 使用 sorted() 排序
-                    li.append(item)
-                    print(item)
 
-            except FileNotFoundError:
-                print('请输入正确的路径!!!!')
-                continue
+def option_brain_network(input_path, subjects):
+    roi_run_menu(input_path, subjects)
 
-            choice2 = input('是否要继续（y/n）：')
-            if choice2 == 'y':
-                roi_run_menu(input_path, li)
-                continue
-            else:
-                continue
-
-def option_2():
-    while True:
-        print("======切割脑区（fsl）======")
-        input_path = input('请输入工作路径(输入0返回上一级):')
-        if input_path == "0":
-            break
-        print(f'你的工作路径是：{input_path}')
-        choice1 = input('是否要继续（y/n）：')
-        if choice1 == 'y':
-            try:
-                print('工作路径中有以下被试：')
-                li = []
-                full = input_path + '/pre'
-                for item in sorted(os.listdir(full)):  # 使用 sorted() 排序
-                    li.append(item)
-                    print(item)
-
-            except FileNotFoundError:
-                print('请输入正确的路径!!!!')
-                continue
-
-            choice2 = input('是否要继续（y/n）：')
-            if choice2 == 'y':
-                fsl(input_path, li)
-                continue
-            else:
-                continue
 
 def help():
     print('---------------------使用说明------------------------------')
@@ -193,7 +87,7 @@ def help():
     │   ├── Sub001dwi.bvec (弥散像信息文件)
     │   ├── Sub001dwi.bval (弥散像信息文件)
     │   ├── Sub001dwi.nii.gz (弥散像文件)
-    │   └── freesurferSub001/(如果要使用Dpabi预处理的数据，需要将freesurfer里每个被试的文件夹移动到这里，如果不用可以不建立此文件夹)
+    │   └── freesurferSub001
     │
     ├── Sub002
     │   ├── Sub002T1.nii.gz
@@ -215,30 +109,36 @@ def help():
     注意每个文件及其名字的大小写！！！！！！！！！！
     """
     print(tree)
-    a = input('回车返回上一级')
+    input('按回车返回上一级')
+
 
 def main():
     while True:
         menu()
-        choice = input("请输入选项（0-8）：")
-        if choice == "1":
-            option_1()
-        elif choice == "2":
-            option_2()
-        elif choice == "3":
-            option_3()
-        elif choice == "4":
-            option_4()
+        choice = input("请输入选项（0-7）：")
+        if choice == "0":
+            break
+        elif choice in ["1", "2", "3", "4", "6"]:
+            input_path, subjects = get_input_path()
+            if input_path is None:
+                continue
+            if choice == "1":
+                option_preprocess(input_path, subjects)
+            elif choice == "2":
+                option_fsl(input_path, subjects)
+            elif choice == "3":
+                option_extract_metrics(input_path, subjects)
+            elif choice == "4":
+                option_fiber_reconstruction(input_path, subjects)
+            elif choice == "6":
+                option_brain_network(input_path, subjects)
         elif choice == "5":
-            pass
-        elif choice == "6":
-            option_6()
+            print("该功能尚未完成！")
         elif choice == "7":
             help()
-        elif choice == "0":
-            break
         else:
             print("无效的选项，请重新输入！")
+
 
 if __name__ == "__main__":
     main()
