@@ -1,11 +1,4 @@
-import json
-import math
-import os
-import preprocess
-import subprocess
-import time
-from datetime import datetime
-
+import json, os, preprocess
 from FoD import fod
 from dt_r import run_menu
 from fsl_cut import fsl
@@ -33,13 +26,12 @@ def load_specific_parameters(file_path, *keys):
 def menu():
     print("\n======== 以下是dwi批量处理界面 ========")
     print("1. 选项一：预处理")
-    print("2. 选项二：切割脑区（freesurfer）")
+    print("2. 选项二：切割脑区（fsl）")
     print("3. 选项三：提取弥散指标")
     print("4. 选项四：全脑纤维重建")
     print("5. 选项五：基于种子点纤维重建（没做好）")
     print("6. 选项六：基于纤维的脑网络构建")
     print("7. 选项七：使用说明")
-    print("8. 选项八：切割脑区（fsl）")
     print("0. 选项零：返回上一级")
     print("=====================================")
 
@@ -75,57 +67,6 @@ def option_1():
 
         else:
             continue
-
-def option_2():
-    while True:
-        print("======以下是切割脑区（freesurfer）界面======")
-        input_path = input('请输入工作路径(输入0返回上一级):')
-        if input_path == "0":
-            break
-        print(f'你的工作路径是：{input_path}')
-        choice1 = input('是否要继续（y/n）：')
-        if choice1 == 'y':
-            try:
-                print('工作路径中有以下被试：')
-                li = []
-                full = input_path + '/pre'
-                for item in sorted(os.listdir(full)):  # 使用 sorted() 排序
-                    li.append(item)
-                    print(item)
-
-            except FileNotFoundError:
-                print('请输入正确的路径!!!!')
-                continue
-
-            choice2 = input('是否要继续（y/n）：')
-            a = len(li)
-            b = load_specific_parameters('sys.json', 'core')
-            need_time = math.ceil(a / b) * 8
-            if choice2 == 'y':
-                st = time.time()
-                now = datetime.now()
-                print(f'{now.hour}:{now.minute}',f'现在开始切割脑区，时间较长！(大约需要{need_time}小时)')
-
-                command = f"ls {input_path} | parallel --jobs {load_specific_parameters('sys.json', 'core')} recon-all -s {input_path}/{{}}/freesurfer{{}} -i {input_path}/{{}}/{{}}T1.nii.gz -all"
-                result = subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
-                print(result.stdout)
-                for i in li:
-                    process = os.popen(
-                        f"mv {load_specific_parameters('sys.json', 'core')}/subjects/freesurfer{i} {input_path}/{i}/")
-                    output = process.read()
-                    print(output)
-                    process.close()
-
-                et = time.time()
-                elapsed_time = et - st
-                hours = int(elapsed_time // 3600)
-                minutes = int((elapsed_time % 3600) // 60)
-                seconds = int(elapsed_time % 60)
-
-                print(f"处理结束，共花费时间：{hours}小时{minutes}分{seconds}秒")
-                break
-            else:
-                continue
 
 def option_3():
     while True:
@@ -211,7 +152,7 @@ def option_6():
             else:
                 continue
 
-def option_8():
+def option_2():
     while True:
         print("======切割脑区（fsl）======")
         input_path = input('请输入工作路径(输入0返回上一级):')
@@ -294,8 +235,6 @@ def main():
             option_6()
         elif choice == "7":
             help()
-        elif choice == "8":
-            option_8()
         elif choice == "0":
             break
         else:
