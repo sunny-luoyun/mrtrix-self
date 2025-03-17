@@ -57,7 +57,7 @@ def run_menu(path, li):
             st = time.time()
 
             process = os.popen(
-                f'mkdir -p {path}/Results/dt')
+                f'mkdir -p {path}/Results/Voxels_dt')
             output = process.read()
             print(output)
             process.close()
@@ -73,49 +73,49 @@ def run_menu(path, li):
                     if choice == 1:
                         print(f"FA 计算{i}扩散张量的分数各向异性")
                         process = os.popen(
-                            f'tensor2metric {path}/work/{i}/dt.mif -fa {path}/Results/dt/{i}_FA.mif -force')
+                            f'tensor2metric {path}/work/{i}/dt.mif -fa {path}/Results/Voxels_dt/{i}_FA.mif -force')
                         output = process.read()
                         print(output)
                         process.close()
                     elif choice == 2:
                         print(f"AD 计算{i}扩散张量的轴向扩散率")
                         process = os.popen(
-                            f'tensor2metric {path}/work/{i}/dt.mif -ad {path}/Results/dt/{i}_AD.mif -force')
+                            f'tensor2metric {path}/work/{i}/dt.mif -ad {path}/Results/Voxels_dt/{i}_AD.mif -force')
                         output = process.read()
                         print(output)
                         process.close()
                     elif choice == 3:
                         print(f"RD 计算{i}扩散张量的径向扩散率")
                         process = os.popen(
-                            f'tensor2metric {path}/work/{i}/dt.mif -rd {path}/Results/dt/{i}_RD.mif -force')
+                            f'tensor2metric {path}/work/{i}/dt.mif -rd {path}/Results/Voxels_dt/{i}_RD.mif -force')
                         output = process.read()
                         print(output)
                         process.close()
                     elif choice == 4:
                         print(f"ADC 计算{i}扩散张量的平均表观扩散系数")
                         process = os.popen(
-                            f'tensor2metric {path}/work/{i}/dt.mif -adc {path}/Results/dt/{i}_ADC.mif -force')
+                            f'tensor2metric {path}/work/{i}/dt.mif -adc {path}/Results/Voxels_dt/{i}_ADC.mif -force')
                         output = process.read()
                         print(output)
                         process.close()
                     elif choice == 5:
                         print(f"cl 计算{i}扩散张量的线性度量")
                         process = os.popen(
-                            f'tensor2metric {path}/work/{i}/dt.mif -cl {path}/Results/dt/{i}_CL.mif -force')
+                            f'tensor2metric {path}/work/{i}/dt.mif -cl {path}/Results/Voxels_dt/{i}_CL.mif -force')
                         output = process.read()
                         print(output)
                         process.close()
                     elif choice == 6:
                         print(f"cp 计算{i}扩散张量的平面度度量")
                         process = os.popen(
-                            f'tensor2metric {path}/work/{i}/dt.mif -cp {path}/Results/dt/{i}_CP.mif -force')
+                            f'tensor2metric {path}/work/{i}/dt.mif -cp {path}/Results/Voxels_dt/{i}_CP.mif -force')
                         output = process.read()
                         print(output)
                         process.close()
                     elif choice == 7:
                         print(f"cs 计算{i}扩散张量的球形度量")
                         process = os.popen(
-                            f'tensor2metric {path}/work/{i}/dt.mif -cs {path}/Results/dt/{i}_CS.mif -force')
+                            f'tensor2metric {path}/work/{i}/dt.mif -cs {path}/Results/Voxels_dt/{i}_CS.mif -force')
                         output = process.read()
                         print(output)
                         process.close()
