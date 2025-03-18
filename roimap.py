@@ -2,7 +2,7 @@ import os
 import time
 
 import numpy as np
-from scipy.io import savemat
+from scipy.io import savemat, loadmat
 
 
 def show_menu():
@@ -89,7 +89,7 @@ def roi_run_menu(path, sub):
                             if choice == 1:
                                 print(f"{i}length矩阵")
                                 process = os.popen(
-                                    f'tck2connectome -symmetric -scale_length {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_length.csv -force')
+                                    f'tck2connectome -symmetric -zero_diagonal -scale_length {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_length.csv -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
@@ -115,7 +115,7 @@ def roi_run_menu(path, sub):
                                     process.close()
 
                                     process = os.popen(
-                                        f'tck2connectome -symmetric -scale_length {path}/Results/TCK_and_SIFT/{i}_{alert_model}_length_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv -force')
+                                        f'tck2connectome -symmetric -zero_diagonal -scale_length {path}/Results/TCK_and_SIFT/{i}_{alert_model}_length_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
@@ -131,13 +131,37 @@ def roi_run_menu(path, sub):
                                     mat_file = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
+                                    # 加载数据
+                                    mat_data = loadmat(
+                                        f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat')
+                                    mat = mat_data['NetworkMatrix']
+
+                                    # 通过input动态获取用户输入的行和列索引
+                                    user_input_rows = brain_mask
+                                    user_input_cols = brain_mask
+
+                                    # 将用户输入的字符串转换为整数列表，并减去1以适配Python的索引
+                                    rows_to_keep = [int(i) - 1 for i in user_input_rows.split(",")]
+                                    cols_to_keep = [int(i) - 1 for i in user_input_cols.split(",")]
+
+                                    # 提取指定的行和列
+                                    new_matrix = mat[np.ix_(rows_to_keep, cols_to_keep)]
+
+                                    # 删除全为0的行和列
+                                    new_matrix = new_matrix[~np.all(new_matrix == 0, axis=1)]  # 删除全为0的行
+                                    new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
+
+                                    # 保存为.mat文件
+                                    output_file_mat = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'  # 指定保存路径
+                                    savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
+
 # iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 
                             elif choice == 2:
 
                                 print(f"{i}invlength矩阵")
                                 process = os.popen(
-                                    f'tck2connectome -symmetric -scale_invlength {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invlength.csv -force')
+                                    f'tck2connectome -symmetric -zero_diagonal -scale_invlength {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invlength.csv -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
@@ -163,7 +187,7 @@ def roi_run_menu(path, sub):
                                     process.close()
 
                                     process = os.popen(
-                                        f'tck2connectome -symmetric -scale_invlength {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invlength_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.csv -force')
+                                        f'tck2connectome -symmetric -zero_diagonal -scale_invlength {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invlength_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.csv -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
@@ -178,10 +202,38 @@ def roi_run_menu(path, sub):
 
                                     mat_file = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
+
+                                    mat_file = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'
+                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
+
+                                    # 加载数据
+                                    mat_data = loadmat(
+                                        f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat')
+                                    mat = mat_data['NetworkMatrix']
+
+                                    # 通过input动态获取用户输入的行和列索引
+                                    user_input_rows = brain_mask
+                                    user_input_cols = brain_mask
+
+                                    # 将用户输入的字符串转换为整数列表，并减去1以适配Python的索引
+                                    rows_to_keep = [int(i) - 1 for i in user_input_rows.split(",")]
+                                    cols_to_keep = [int(i) - 1 for i in user_input_cols.split(",")]
+
+                                    # 提取指定的行和列
+                                    new_matrix = mat[np.ix_(rows_to_keep, cols_to_keep)]
+
+                                    # 删除全为0的行和列
+                                    new_matrix = new_matrix[~np.all(new_matrix == 0, axis=1)]  # 删除全为0的行
+                                    new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
+
+                                    # 保存为.mat文件
+                                    output_file_mat = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'  # 指定保存路径
+                                    savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
+
                             elif choice == 3:
                                 print(f"{i}invnodevol矩阵")
                                 process = os.popen(
-                                    f'tck2connectome -symmetric -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invnodevol.csv -force')
+                                    f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invnodevol.csv -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
@@ -207,7 +259,7 @@ def roi_run_menu(path, sub):
                                     process.close()
 
                                     process = os.popen(
-                                        f'tck2connectome -symmetric -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invnodevol_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
+                                        f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invnodevol_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
@@ -222,6 +274,34 @@ def roi_run_menu(path, sub):
 
                                     mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
+
+                                    mat_file = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'
+                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
+
+                                    # 加载数据
+                                    mat_data = loadmat(
+                                        f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat')
+                                    mat = mat_data['NetworkMatrix']
+
+                                    # 通过input动态获取用户输入的行和列索引
+                                    user_input_rows = brain_mask
+                                    user_input_cols = brain_mask
+
+                                    # 将用户输入的字符串转换为整数列表，并减去1以适配Python的索引
+                                    rows_to_keep = [int(i) - 1 for i in user_input_rows.split(",")]
+                                    cols_to_keep = [int(i) - 1 for i in user_input_cols.split(",")]
+
+                                    # 提取指定的行和列
+                                    new_matrix = mat[np.ix_(rows_to_keep, cols_to_keep)]
+
+                                    # 删除全为0的行和列
+                                    new_matrix = new_matrix[~np.all(new_matrix == 0, axis=1)]  # 删除全为0的行
+                                    new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
+
+                                    # 保存为.mat文件
+                                    output_file_mat = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'  # 指定保存路径
+                                    savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
+
                             elif choice == 4:
                                 print(f"{i}FA矩阵")
                                 '''tcksample tracks.tck FA.mif mean_FA_per_streamline.csv -stat_tck mean
@@ -233,7 +313,7 @@ def roi_run_menu(path, sub):
                                 print(output)
                                 process.close()
                                 process = os.popen(
-                                    f'tck2connectome {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_mean_FA_connectome.csv -scale_file {path}/Results/Map/{i}_mean_FA_per_streamline.csv -stat_edge mean -force')
+                                    f'tck2connectome -zero_diagonal {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_mean_FA_connectome.csv -scale_file {path}/Results/Map/{i}_mean_FA_per_streamline.csv -stat_edge mean -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
