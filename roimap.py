@@ -203,12 +203,12 @@ def roi_run_menu(path, sub):
                                     mat_file = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
-                                    mat_file = f'{path}/Results/ROIMap/length/{i}_{alert_model}_invlength_ROIMAP.mat'
+                                    mat_file = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
                                     # 加载数据
                                     mat_data = loadmat(
-                                        f'{path}/Results/ROIMap/length/{i}_{alert_model}_invlength_ROIMAP.mat')
+                                        f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat')
                                     mat = mat_data['NetworkMatrix']
 
                                     # 通过input动态获取用户输入的行和列索引
@@ -227,7 +227,7 @@ def roi_run_menu(path, sub):
                                     new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
 
                                     # 保存为.mat文件
-                                    output_file_mat = f'{path}/Results/ROIMap/length/{i}_{alert_model}_invlength_ROIMAP.mat'  # 指定保存路径
+                                    output_file_mat = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'  # 指定保存路径
                                     savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
 
                             elif choice == 3:
@@ -275,12 +275,12 @@ def roi_run_menu(path, sub):
                                     mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
-                                    mat_file = f'{path}/Results/ROIMap/length/{i}_{alert_model}_invnodevol_ROIMAP.mat'
+                                    mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
                                     # 加载数据
                                     mat_data = loadmat(
-                                        f'{path}/Results/ROIMap/length/{i}_{alert_model}_invnodevol_ROIMAP.mat')
+                                        f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat')
                                     mat = mat_data['NetworkMatrix']
 
                                     # 通过input动态获取用户输入的行和列索引
@@ -299,7 +299,7 @@ def roi_run_menu(path, sub):
                                     new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
 
                                     # 保存为.mat文件
-                                    output_file_mat = f'{path}/Results/ROIMap/length/{i}_{alert_model}_invnodevol_ROIMAP.mat'  # 指定保存路径
+                                    output_file_mat = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'  # 指定保存路径
                                     savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
 
                             elif choice == 4:
