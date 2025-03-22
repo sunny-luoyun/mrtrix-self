@@ -4,7 +4,7 @@ import preprocess
 import dt_r
 import FoD
 import roimap
-import fsl_cut
+import fiber_build
 
 
 def load_specific_parameters(file_path, *keys):

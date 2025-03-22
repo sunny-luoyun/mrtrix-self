@@ -1,7 +1,7 @@
 import json, os
 from FoD import fod
 from dt_r import run_menu
-from fsl_cut import fsl
+from fiber_build import fiber
 from roimap import roi_run_menu
 from preprocess import prep
 
@@ -27,8 +27,8 @@ def load_specific_parameters(file_path, *keys):
 def menu():
     print("\n======== 以下是dwi批量处理界面 ========")
     print("1. 预处理")
-    print("2. 切割脑区（fsl）")
-    print("3. 基于体素的弥散指标")
+    print("2. 基于体素的弥散指标")
+    print("3. FOD计算")
     print("4. 全脑纤维重建")
     print("5. 基于种子点纤维重建（未完成）")
     print("6. 基于纤维的脑网络构建")
@@ -58,15 +58,15 @@ def option_preprocess(input_path, subjects):
     prep(input_path, subjects)
 
 
-def option_fsl(input_path, subjects):
-    fsl(input_path, subjects)
+def option_fiber(input_path, subjects):
+    fiber(input_path, subjects)
 
 
 def option_extract_metrics(input_path, subjects):
     run_menu(input_path, subjects)
 
 
-def option_fiber_reconstruction(input_path, subjects):
+def option_fod(input_path, subjects):
     fod(input_path, subjects)
 
 
@@ -87,7 +87,6 @@ def help():
     │   ├── Sub001dwi.bvec (弥散像信息文件)
     │   ├── Sub001dwi.bval (弥散像信息文件)
     │   ├── Sub001dwi.nii.gz (弥散像文件)
-    │   └── freesurferSub001
     │
     ├── Sub002
     │   ├── Sub002T1.nii.gz
@@ -95,7 +94,6 @@ def help():
     │   ├── Sub002dwi.bvec
     │   ├── Sub002dwi.bval
     │   ├── Sub002dwi.nii.gz
-    │   └── freesurferSub002/
     │
     ├── ...
     │
@@ -105,7 +103,6 @@ def help():
         ├── Sub0xxdwi.bvec
         ├── Sub0xxdwi.bval
         ├── Sub0xxdwi.nii.gz
-        └── freesurferSub0xx/
     注意每个文件及其名字的大小写！！！！！！！！！！
     """
     print(tree)
@@ -124,12 +121,12 @@ def main():
                 continue
             if choice == "1":
                 option_preprocess(input_path, subjects)
-            elif choice == "2":
-                option_fsl(input_path, subjects)
-            elif choice == "3":
-                option_extract_metrics(input_path, subjects)
             elif choice == "4":
-                option_fiber_reconstruction(input_path, subjects)
+                option_fiber(input_path, subjects)
+            elif choice == "2":
+                option_extract_metrics(input_path, subjects)
+            elif choice == "3":
+                option_fod(input_path, subjects)
             elif choice == "6":
                 option_brain_network(input_path, subjects)
         elif choice == "5":

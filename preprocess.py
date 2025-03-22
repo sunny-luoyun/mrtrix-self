@@ -1,6 +1,12 @@
 import os
 import time
 
+# 获取当前脚本所在的目录
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 构建相对路径
+template_path = os.path.join(current_dir, 'Templates', 'MNI152.nii.gz')
+
 def prep(path, list):
     start_time = time.time()
     for i in list:
@@ -63,18 +69,86 @@ def prep(path, list):
         print(output)
         process.close()
 
-        # 剥脑壳
-        print('剥脑壳')
+        print('T1格式转换')
+        process = os.popen(
+            f'mrconvert {path}/pre/{i}/{i}T1.nii.gz {path}/work/preprocess/{i}/T1_raw.mif -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('提取b0')
+        process = os.popen(
+            f'dwiextract {path}/work/preprocess/{i}/dwi_raw_denoise_degibbs_geomcorr_biascorr.mif - -bzero | mrmath - mean {path}/work/preprocess/{i}/mean_b0_preprocessed.mif -axis 3 -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('b0格式转换')
+        process = os.popen(
+            f'mrconvert {path}/work/preprocess/{i}/mean_b0_preprocessed.mif {path}/work/preprocess/{i}/mean_b0_preprocessed.nii.gz -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('T1格式转换')
+        process = os.popen(
+            f'mrconvert {path}/work/preprocess/{i}/T1_raw.mif {path}/work/preprocess/{i}/T1_raw.nii.gz -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('T1配MNI空间')
+        process = os.popen(
+            f'flirt -in {path}/work/preprocess/{i}/T1_raw.nii.gz -ref {template_path} -dof 12 -out {path}/work/preprocess/{i}/T1_to_MNI.nii.gz -omat {path}/work/preprocess/{i}/T1_to_MNI_fsl.mat')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('dwi配MNI空间')
+        process = os.popen(
+            f'flirt -in {path}/work/preprocess/{i}/mean_b0_preprocessed.nii.gz -ref {template_path} -dof 6 -out {path}/work/preprocess/{i}/dwi_to_MNI.nii.gz -omat {path}/work/preprocess/{i}/dwi_to_MNI_fsl.mat')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('矩阵格式转换')
+        process = os.popen(
+            f'transformconvert {path}/work/preprocess/{i}/T1_to_MNI_fsl.mat {path}/work/preprocess/{i}/T1_raw.nii.gz {template_path} flirt_import {path}/work/preprocess/{i}/T1_to_MNI_mrtrix.txt -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('矩阵格式转换')
+        process = os.popen(
+            f'transformconvert {path}/work/preprocess/{i}/dwi_to_MNI_fsl.mat {path}/work/preprocess/{i}/mean_b0_preprocessed.nii.gz {template_path} flirt_import {path}/work/preprocess/{i}/dwi_to_MNI_mrtrix.txt -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('提取mask')
         process = os.popen(
             f'dwi2mask {path}/work/preprocess/{i}/dwi_raw_denoise_degibbs_geomcorr_biascorr.mif {path}/work/preprocess/{i}/dwi_raw_denoise_degibbs_geomcorr_biascorr_mask.mif -force')
         output = process.read()
         print(output)
         process.close()
 
-        # 优化mask
         print('优化mask')
         process = os.popen(
             f'maskfilter {path}/work/preprocess/{i}/dwi_raw_denoise_degibbs_geomcorr_biascorr_mask.mif dilate {path}/work/preprocess/{i}/dwi_raw_denoise_degibbs_geomcorr_biascorr_mask_dilate6.mif -npass 6 -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('划分5种组织')
+        process = os.popen(
+            f'5ttgen fsl {path}/work/preprocess/{i}/T1_to_MNI.nii.gz {path}/work/preprocess/{i}/T1_MNI_5tt.mif -force')
+        output = process.read()
+        print(output)
+        process.close()
+
+        print('提取灰白质分界线')
+        process = os.popen(
+            f'5tt2gmwmi {path}/work/preprocess/{i}/T1_MNI_5tt.mif {path}/work/preprocess/{i}/gmwmSeed.mif -force')
         output = process.read()
         print(output)
         process.close()
