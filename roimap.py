@@ -65,13 +65,14 @@ def roi_run_menu(path, sub):
                     alert_model = alert
                     while '.' in alert_model:
                         alert_model, _ = os.path.splitext(alert_model)
-                    process = os.popen(
-                        f'mkdir -p {path}/work/Map')
-                    output = process.read()
-                    print(output)
-                    process.close()
+
                     for i in sub:
                         start_timee = time.time()
+                        process = os.popen(
+                            f'mkdir -p {path}/work/Map/{i}/')
+                        output = process.read()
+                        print(output)
+                        process.close()
 
                         '''print(f'{alert_model}图谱配准{i}dwi')
                         process = os.popen(
