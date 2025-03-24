@@ -3,7 +3,8 @@ import time
 
 import numpy as np
 from scipy.io import savemat, loadmat
-
+# 获取当前脚本所在的目录
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 def show_menu():
     print("请选择需要计算生成矩阵的指标（输入对应的数字，用空格分隔）：")
@@ -58,28 +59,30 @@ def roi_run_menu(path, sub):
                 choice1 = input('是否要继续（y/n）：')
                 if choice1 == 'y':
                     print('开始处理')
-
+                    # 构建相对路径
+                    template_path = os.path.join(current_dir, 'Templates', f'{alert}')
                     start_time = time.time()
                     alert_model = alert
                     while '.' in alert_model:
                         alert_model, _ = os.path.splitext(alert_model)
                     process = os.popen(
-                        f'mkdir -p {path}/Results/Map')
+                        f'mkdir -p {path}/work/Map')
                     output = process.read()
                     print(output)
                     process.close()
                     for i in sub:
                         start_timee = time.time()
 
-                        print(f'{alert_model}图谱配准{i}dwi')
+                        '''print(f'{alert_model}图谱配准{i}dwi')
                         process = os.popen(
                             f'flirt -in Templates/{alert} -ref {path}/work/{i}/mean_b0_preprocessed.nii.gz -dof 6 -cost normmi -omat {path}/work/{i}/{alert_model}_to_b0.mat -out {path}/work/{i}/{alert_model}_change_int.nii.gz')
                         output = process.read()
                         print(output)
                         process.close()
-
+                        '''
+                        print('图谱格式转换')
                         process = os.popen(
-                            f'mrconvert {path}/work/{i}/{alert_model}_change_int.nii.gz {path}/work/{i}/{alert_model}_change.nii.gz -datatype int32 -force')
+                            f'mrconvert {template_path} {path}/work/Map/{i}/{alert_model}_change.nii.gz -datatype int32 -force')
                         output = process.read()
                         print(output)
                         process.close()
@@ -89,11 +92,11 @@ def roi_run_menu(path, sub):
                             if choice == 1:
                                 print(f"{i}length矩阵")
                                 process = os.popen(
-                                    f'tck2connectome -symmetric -zero_diagonal -scale_length {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_length.csv -force')
+                                    f'tck2connectome -symmetric -zero_diagonal -scale_length {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}/{alert_model}_length_MAP.csv -out_assignment {path}/work/Map/{i}/{alert_model}_assign_length.csv -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
-                                csv_file = f'{path}/Results/Map/{i}_{alert_model}_length_MAP.csv'  # CSV文件路径
+                                csv_file = f'{path}/work/Map/{i}/{alert_model}_length_MAP.csv'  # CSV文件路径
                                 NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
                                 process = os.popen(
@@ -109,17 +112,17 @@ def roi_run_menu(path, sub):
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_assign_length.csv -files single {path}/Results/TCK_and_SIFT/{i}_{alert_model}_length_ROIMAP.tck -force')
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_length.csv -files single {path}/work/Map/{i}/{alert_model}_length_ROIMAP.tck -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
 
                                     process = os.popen(
-                                        f'tck2connectome -symmetric -zero_diagonal -scale_length {path}/Results/TCK_and_SIFT/{i}_{alert_model}_length_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv -force')
+                                        f'tck2connectome -symmetric -zero_diagonal -scale_length {path}/work/Map/{i}/{alert_model}_length_ROIMAP.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}_{alert_model}_length_ROIMAP.csv -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
-                                    csv_file = f'{path}/Results/Map/{i}_{alert_model}_length_ROIMAP.csv'  # CSV文件路径
+                                    csv_file = f'{path}/work/Map/{i}_{alert_model}_length_ROIMAP.csv'  # CSV文件路径
                                     NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
                                     process = os.popen(
@@ -161,11 +164,11 @@ def roi_run_menu(path, sub):
 
                                 print(f"{i}invlength矩阵")
                                 process = os.popen(
-                                    f'tck2connectome -symmetric -zero_diagonal -scale_invlength {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invlength.csv -force')
+                                    f'tck2connectome -symmetric -zero_diagonal -scale_invlength {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}/{alert_model}_invlength_MAP.csv -out_assignment {path}/work/Map/{i}/{alert_model}_assign_invlength.csv -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
-                                csv_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_MAP.csv'  # CSV文件路径
+                                csv_file = f'{path}/work/Map/{i}/{alert_model}_invlength_MAP.csv'  # CSV文件路径
                                 NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
                                 process = os.popen(
@@ -181,17 +184,17 @@ def roi_run_menu(path, sub):
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_assign_invlength.csv -files single {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invlength_ROIMAP.tck -force')
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_invlength.csv -files single {path}/work/Map/{i}/{alert_model}_invlength_ROIMAP.tck -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
 
                                     process = os.popen(
-                                        f'tck2connectome -symmetric -zero_diagonal -scale_invlength {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invlength_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.csv -force')
+                                        f'tck2connectome -symmetric -zero_diagonal -scale_invlength {path}/work/Map/{i}/{alert_model}_invlength_ROIMAP.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}_{alert_model}_invlength_ROIMAP.csv -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
-                                    csv_file = f'{path}/Results/Map/{i}_{alert_model}_invlength_ROIMAP.csv'  # CSV文件路径
+                                    csv_file = f'{path}/work/Map/{i}_{alert_model}_invlength_ROIMAP.csv'  # CSV文件路径
                                     NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
                                     process = os.popen(
@@ -199,9 +202,6 @@ def roi_run_menu(path, sub):
                                     output = process.read()
                                     print(output)
                                     process.close()
-
-                                    mat_file = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'
-                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
                                     mat_file = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
@@ -233,11 +233,11 @@ def roi_run_menu(path, sub):
                             elif choice == 3:
                                 print(f"{i}invnodevol矩阵")
                                 process = os.popen(
-                                    f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.csv -out_assignment {path}/work/{i}/{alert_model}_assign_invnodevol.csv -force')
+                                    f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}/{alert_model}_invnodevol_MAP.csv -out_assignment {path}/work/Map/{i}/{alert_model}_assign_invnodevol.csv -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
-                                csv_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_MAP.csv'  # CSV文件路径
+                                csv_file = f'{path}/work/Map/{i}/{alert_model}_invnodevol_MAP.csv'  # CSV文件路径
                                 NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
                                 process = os.popen(
@@ -253,17 +253,17 @@ def roi_run_menu(path, sub):
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/work/{i}/{alert_model}_assign_invnodevol.csv -files single {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invnodevol_ROIMAP.tck -force')
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_invnodevol.csv -files single {path}/work/Map/{i}/{alert_model}_invnodevol_ROIMAP.tck -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
 
                                     process = os.popen(
-                                        f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/Results/TCK_and_SIFT/{i}_{alert_model}_invnodevol_ROIMAP.tck {path}/work/{i}/{alert_model}_change.nii.gz {path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
+                                        f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/work/Map/{i}/{alert_model}_invnodevol_ROIMAP.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
-                                    csv_file = f'{path}/Results/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv'  # CSV文件路径
+                                    csv_file = f'{path}/work/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv'  # CSV文件路径
                                     NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
 
                                     process = os.popen(
@@ -271,9 +271,6 @@ def roi_run_menu(path, sub):
                                     output = process.read()
                                     print(output)
                                     process.close()
-
-                                    mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
-                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
 
                                     mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
@@ -308,7 +305,7 @@ def roi_run_menu(path, sub):
                                     tck2connectome tracks.tck nodes.mif mean_FA_connectome.csv -scale_file mean_FA_per_streamline.csv -stat_edge mean
                                 '''
                                 process = os.popen(
-                                    f'tcksample {path}/Results/TCK_and_SIFT/{i}_tracks_10m.tck {path}/Results/dt/{i}_FA.mif {path}/Results/Map/{i}_mean_FA_per_streamline.csv -stat_tck mean -force')
+                                    f'tcksample {path}/work/fiber/{i}/tracks_10m.tck {path}/Results/dt/{i}_FA.mif {path}/Results/Map/{i}_mean_FA_per_streamline.csv -stat_tck mean -force')
                                 output = process.read()
                                 print(output)
                                 process.close()
