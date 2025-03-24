@@ -43,7 +43,7 @@ def fiber(path, list):
 
         print('计算纤维权重')
         process = os.popen(
-            f'tcksift2 –act {path}/work/preprocess/{i}/T1_MNI_5tt.mif {path}/work/fiber/{i}/tracks_10m.tck {path}/work/FOD/{i}/wmfod_norm_MNI.mif -out_coeffs {path}/work/fiber/{i}/sift_coeffs_10M.txt')
+            f'tcksift2 –act {path}/work/preprocess/{i}/T1_MNI_5tt.mif {path}/work/fiber/{i}/tracks_10m.tck {path}/work/FOD/{i}/wmfod_norm_MNI.mif {path}/work/fiber/{i}/sift_coeffs_10M.txt')
         output = process.read()
         print(output)
         process.close()
