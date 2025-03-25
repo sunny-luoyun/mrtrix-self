@@ -1,4 +1,4 @@
-import os, complex_main, single_main, json
+import os, complex_main, single_main, Correlation
 
 
 def menu():
@@ -6,6 +6,7 @@ def menu():
     print("1. 选项一：单一被试处理")
     print("2. 选项二：批量被试处理")
     print("3. 选项三：结果查看(mrview)")
+    print("4. 选项四：结构功能耦合相关分析")
     print("0. 选项零：退出程序")
     print("===========================")
 
@@ -23,6 +24,8 @@ def main():
             output = process.read()
             print(output)
             process.close()
+        elif choice == "4":
+            Correlation.main()
         elif choice == "0":
             break
         else:
