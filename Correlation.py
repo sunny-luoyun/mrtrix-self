@@ -58,7 +58,7 @@ def perform_correlation_analysis(file1, file2):
 
 def main():
     # 输入文件夹路径
-    root_dir = input("请输入文件夹A的路径: ")
+    root_dir = input("请输入指标文件夹的路径: ")
 
     # 找到所有匹配的文件
     matching_files = find_matching_files(root_dir)
