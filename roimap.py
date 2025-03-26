@@ -106,7 +106,7 @@ def roi_run_menu(path, sub):
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_length.csv -tck_weights_in {path}/work/fiber/{i}/sift_coeffs_10M.txt -files single {path}/work/Map/{i}/{alert_model}_length_ROIMAP.tck -force')
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_length.csv -files single {path}/work/Map/{i}/{alert_model}_length_ROIMAP.tck -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
@@ -178,7 +178,7 @@ def roi_run_menu(path, sub):
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_invlength.csv -tck_weights_in {path}/work/fiber/{i}/sift_coeffs_10M.txt -files single {path}/work/Map/{i}/{alert_model}_invlength_ROIMAP.tck -force')
+                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_invlength.csv -files single {path}/work/Map/{i}/{alert_model}_invlength_ROIMAP.tck -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
@@ -253,7 +253,7 @@ def roi_run_menu(path, sub):
                                     process.close()
 
                                     process = os.popen(
-                                        f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/work/Map/{i}/{alert_model}_invnodevol_ROIMAP.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz -tck_weights_in {path}/work/fiber/{i}/sift_coeffs_10M.txt {path}/work/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
+                                        f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/work/Map/{i}/{alert_model}_invnodevol_ROIMAP.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
                                     output = process.read()
                                     print(output)
                                     process.close()
