@@ -105,7 +105,7 @@ def roi_run_menu(path, sub):
                                 if brain_mask == '':
                                     pass
                                 else:
-                                    process = os.popen(
+                                    '''process = os.popen(
                                         f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_length.csv -tck_weights_in {path}/work/fiber/{i}/sift_coeffs_10M.txt -files single {path}/work/Map/{i}/{alert_model}_length_ROIMAP.tck -force')
                                     output = process.read()
                                     print(output)
@@ -117,7 +117,7 @@ def roi_run_menu(path, sub):
                                     print(output)
                                     process.close()
                                     csv_file = f'{path}/work/Map/{i}_{alert_model}_length_ROIMAP.csv'  # CSV文件路径
-                                    NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
+                                    NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件'''
 
                                     process = os.popen(
                                         f'mkdir -p {path}/Results/ROIMap/length')
@@ -125,12 +125,12 @@ def roi_run_menu(path, sub):
                                     print(output)
                                     process.close()
 
-                                    mat_file = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'
-                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
+                                    '''mat_file = f'{path}/Results/GlobalMap/length/{i}_{alert_model}_length_MAP.mat'
+                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})'''
 
                                     # 加载数据
                                     mat_data = loadmat(
-                                        f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat')
+                                        f'{path}/Results/GlobalMap/length/{i}_{alert_model}_length_MAP.mat')
                                     mat = mat_data['NetworkMatrix']
 
                                     # 通过input动态获取用户输入的行和列索引
