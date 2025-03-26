@@ -1,8 +1,9 @@
 import os
-import scipy.io as sio
-from scipy.stats import pearsonr
 import re
 import pandas as pd
+import scipy.io as sio
+from scipy.stats import pearsonr
+import numpy as np
 
 def find_matching_files(root_dir):
     """
@@ -32,9 +33,11 @@ def find_matching_files(root_dir):
 
     return matching_files
 
+
+
 def perform_correlation_analysis(file1, file2):
     """
-    执行相关性分析并返回皮尔逊相关系数
+    执行相关性分析并返回皮尔逊相关系数，忽略值为0的数据
     """
     mat_A = sio.loadmat(file1)
     mat_B = sio.loadmat(file2)
@@ -51,8 +54,14 @@ def perform_correlation_analysis(file1, file2):
     vector_A = A.flatten()
     vector_B = B.flatten()
 
-    # 计算皮尔逊相关系数
-    correlation, _ = pearsonr(vector_A, vector_B)
+    # 筛选出非零元素的索引
+    non_zero_indices = np.logical_and(vector_A != 0, vector_B != 0)
+
+    # 使用非零元素进行相关性分析
+    if np.sum(non_zero_indices) == 0:
+        raise ValueError("没有非零的共同数据点，无法计算相关系数。")
+
+    correlation, _ = pearsonr(vector_A[non_zero_indices], vector_B[non_zero_indices])
 
     return correlation
 
