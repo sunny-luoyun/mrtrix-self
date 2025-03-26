@@ -1,6 +1,6 @@
 import os
 import time
-
+import scipy.io as sio
 import numpy as np
 from scipy.io import savemat, loadmat
 # 获取当前脚本所在的目录
@@ -128,29 +128,24 @@ def roi_run_menu(path, sub):
                                     '''mat_file = f'{path}/Results/GlobalMap/length/{i}_{alert_model}_length_MAP.mat'
                                     savemat(mat_file, {'NetworkMatrix': NetworkMatrix})'''
 
-                                    # 加载数据
-                                    mat_data = loadmat(
-                                        f'{path}/Results/GlobalMap/length/{i}_{alert_model}_length_MAP.mat')
-                                    mat = mat_data['NetworkMatrix']
+                                    mat_file_path = f'{path}/Results/GlobalMap/length/{i}_{alert_model}_length_MAP.mat'  # 替换为你的mat文件路径
+                                    mat_data = sio.loadmat(mat_file_path)
+                                    matrix_125x125 = mat_data['NetworkMatrix']  # 替换为mat文件中矩阵变量的名字
 
-                                    # 通过input动态获取用户输入的行和列索引
-                                    user_input_rows = brain_mask
-                                    user_input_cols = brain_mask
+                                    # 你指定的节点索引
+                                    node_indices = brain_mask
 
-                                    # 将用户输入的字符串转换为整数列表，并减去1以适配Python的索引
-                                    rows_to_keep = [int(i) - 1 for i in user_input_rows.split(",")]
-                                    cols_to_keep = [int(i) - 1 for i in user_input_cols.split(",")]
+                                    # 将索引调整为Python的0-based索引
+                                    node_indices = [i - 1 for i in node_indices]
 
-                                    # 提取指定的行和列
-                                    new_matrix = mat[np.ix_(rows_to_keep, cols_to_keep)]
+                                    # 提取子矩阵
+                                    matrix_32x32 = matrix_125x125[np.ix_(node_indices, node_indices)]
 
-                                    # 删除全为0的行和列
-                                    new_matrix = new_matrix[~np.all(new_matrix == 0, axis=1)]  # 删除全为0的行
-                                    new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
+                                    # 输出结果
+                                    print(matrix_32x32)
 
-                                    # 保存为.mat文件
-                                    output_file_mat = f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat'  # 指定保存路径
-                                    savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
+                                    # 保存为新的mat文件
+                                    sio.savemat(f'{path}/Results/ROIMap/length/{i}_{alert_model}_length_ROIMAP.mat', {'NetworkMatrix': matrix_32x32})
 
 # iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 
