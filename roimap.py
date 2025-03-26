@@ -132,11 +132,9 @@ def roi_run_menu(path, sub):
                                     mat_data = sio.loadmat(mat_file_path)
                                     matrix_125x125 = mat_data['NetworkMatrix']  # 替换为mat文件中矩阵变量的名字
 
-                                    # 你指定的节点索引
-                                    node_indices = brain_mask
 
                                     # 将索引调整为Python的0-based索引
-                                    node_indices = [i - 1 for i in node_indices]
+                                    node_indices = [int(i.strip()) - 1 for i in brain_mask.split(',')]
 
                                     # 提取子矩阵
                                     matrix_32x32 = matrix_125x125[np.ix_(node_indices, node_indices)]
