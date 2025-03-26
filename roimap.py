@@ -155,51 +155,27 @@ def roi_run_menu(path, sub):
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_invlength.csv -tck_weights_in {path}/work/fiber/{i}/sift_coeffs_10M.txt -files single {path}/work/Map/{i}/{alert_model}_invlength_ROIMAP.tck -force')
-                                    output = process.read()
-                                    print(output)
-                                    process.close()
-
-                                    process = os.popen(
-                                        f'tck2connectome -symmetric -zero_diagonal -scale_invlength {path}/work/Map/{i}/{alert_model}_invlength_ROIMAP.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}_{alert_model}_invlength_ROIMAP.csv -force')
-                                    output = process.read()
-                                    print(output)
-                                    process.close()
-                                    csv_file = f'{path}/work/Map/{i}_{alert_model}_invlength_ROIMAP.csv'  # CSV文件路径
-                                    NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
-
-                                    process = os.popen(
                                         f'mkdir -p {path}/Results/ROIMap/invlength')
                                     output = process.read()
                                     print(output)
                                     process.close()
 
-                                    mat_file = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'
-                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
+                                    mat_file_path = f'{path}/Results/GlobalMap/invlength/{i}_{alert_model}_invlength_MAP.mat'  # 替换为你的mat文件路径
+                                    mat_data = sio.loadmat(mat_file_path)
+                                    matrix_125x125 = mat_data['NetworkMatrix']  # 替换为mat文件中矩阵变量的名字
 
-                                    # 加载数据
-                                    mat_data = loadmat(
-                                        f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat')
-                                    mat = mat_data['NetworkMatrix']
+                                    # 将索引调整为Python的0-based索引
+                                    node_indices = [int(i.strip()) - 1 for i in brain_mask.split(',')]
 
-                                    # 通过input动态获取用户输入的行和列索引
-                                    user_input_rows = brain_mask
-                                    user_input_cols = brain_mask
+                                    # 提取子矩阵
+                                    matrix_32x32 = matrix_125x125[np.ix_(node_indices, node_indices)]
 
-                                    # 将用户输入的字符串转换为整数列表，并减去1以适配Python的索引
-                                    rows_to_keep = [int(i) - 1 for i in user_input_rows.split(",")]
-                                    cols_to_keep = [int(i) - 1 for i in user_input_cols.split(",")]
+                                    # 输出结果
+                                    print(matrix_32x32)
 
-                                    # 提取指定的行和列
-                                    new_matrix = mat[np.ix_(rows_to_keep, cols_to_keep)]
-
-                                    # 删除全为0的行和列
-                                    new_matrix = new_matrix[~np.all(new_matrix == 0, axis=1)]  # 删除全为0的行
-                                    new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
-
-                                    # 保存为.mat文件
-                                    output_file_mat = f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat'  # 指定保存路径
-                                    savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
+                                    # 保存为新的mat文件
+                                    sio.savemat(f'{path}/Results/ROIMap/invlength/{i}_{alert_model}_invlength_ROIMAP.mat',
+                                                {'NetworkMatrix': matrix_32x32})
 
                             elif choice == 3:
                                 print(f"{i}invnodevol矩阵")
@@ -224,51 +200,28 @@ def roi_run_menu(path, sub):
                                     pass
                                 else:
                                     process = os.popen(
-                                        f'connectome2tck -nodes {brain_mask} -exclusive {path}/work/fiber/{i}/tracks_10m.tck {path}/work/Map/{i}/{alert_model}_assign_invnodevol.csv -tck_weights_in {path}/work/fiber/{i}/sift_coeffs_10M.txt -files single {path}/work/Map/{i}/{alert_model}_invnodevol_ROIMAP.tck -force')
-                                    output = process.read()
-                                    print(output)
-                                    process.close()
-
-                                    process = os.popen(
-                                        f'tck2connectome -symmetric -zero_diagonal -scale_invnodevol {path}/work/Map/{i}/{alert_model}_invnodevol_ROIMAP.tck {path}/work/Map/{i}/{alert_model}_change.nii.gz {path}/work/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv -force')
-                                    output = process.read()
-                                    print(output)
-                                    process.close()
-                                    csv_file = f'{path}/work/Map/{i}_{alert_model}_invnodevol_ROIMAP.csv'  # CSV文件路径
-                                    NetworkMatrix = np.loadtxt(csv_file, delimiter=',')  # 读取CSV文件
-
-                                    process = os.popen(
                                         f'mkdir -p {path}/Results/ROIMap/invnodevol')
                                     output = process.read()
                                     print(output)
                                     process.close()
 
-                                    mat_file = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'
-                                    savemat(mat_file, {'NetworkMatrix': NetworkMatrix})
+                                    mat_file_path = f'{path}/Results/GlobalMap/invnodevol/{i}_{alert_model}_invnodevol_MAP.mat'  # 替换为你的mat文件路径
+                                    mat_data = sio.loadmat(mat_file_path)
+                                    matrix_125x125 = mat_data['NetworkMatrix']  # 替换为mat文件中矩阵变量的名字
 
-                                    # 加载数据
-                                    mat_data = loadmat(
-                                        f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat')
-                                    mat = mat_data['NetworkMatrix']
+                                    # 将索引调整为Python的0-based索引
+                                    node_indices = [int(i.strip()) - 1 for i in brain_mask.split(',')]
 
-                                    # 通过input动态获取用户输入的行和列索引
-                                    user_input_rows = brain_mask
-                                    user_input_cols = brain_mask
+                                    # 提取子矩阵
+                                    matrix_32x32 = matrix_125x125[np.ix_(node_indices, node_indices)]
 
-                                    # 将用户输入的字符串转换为整数列表，并减去1以适配Python的索引
-                                    rows_to_keep = [int(i) - 1 for i in user_input_rows.split(",")]
-                                    cols_to_keep = [int(i) - 1 for i in user_input_cols.split(",")]
+                                    # 输出结果
+                                    print(matrix_32x32)
 
-                                    # 提取指定的行和列
-                                    new_matrix = mat[np.ix_(rows_to_keep, cols_to_keep)]
-
-                                    # 删除全为0的行和列
-                                    new_matrix = new_matrix[~np.all(new_matrix == 0, axis=1)]  # 删除全为0的行
-                                    new_matrix = new_matrix[:, ~np.all(new_matrix == 0, axis=0)]  # 删除全为0的列
-
-                                    # 保存为.mat文件
-                                    output_file_mat = f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat'  # 指定保存路径
-                                    savemat(output_file_mat, {'NetworkMatrix': new_matrix})  # 保存为字典格式
+                                    # 保存为新的mat文件
+                                    sio.savemat(
+                                        f'{path}/Results/ROIMap/invnodevol/{i}_{alert_model}_invnodevol_ROIMAP.mat',
+                                        {'NetworkMatrix': matrix_32x32})
 
                             elif choice == 4:
                                 print(f"{i}FA矩阵")
