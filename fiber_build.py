@@ -11,7 +11,7 @@ def fiber(path, list):
     start_time = time.time()
     for i in list:
         start_timee = time.time()
-        '''
+
         process = os.popen(
             f'mkdir -p {path}/work/fiber/{i}')
         output = process.read()
@@ -33,21 +33,20 @@ def fiber(path, list):
         output = process.read()
         print(output)
         process.close()
-        
+
         print('缩减纤维数量')
         process = os.popen(
             f'tcksift –act {path}/work/preprocess/{i}/T1_MNI_5tt.mif -term_number 1000k {path}/work/fiber/{i}/tracks_10m.tck {path}/work/FOD/{i}/wmfod_norm_MNI.mif {path}/work/fiber/{i}/sift_1m.tck')
         output = process.read()
         print(output)
         process.close()
-        '''
+
         print('计算纤维权重')
         process = os.popen(
             f'tcksift2 –act {path}/work/preprocess/{i}/T1_MNI_5tt.mif {path}/work/fiber/{i}/tracks_10m.tck {path}/work/FOD/{i}/wmfod_norm_MNI.mif {path}/work/fiber/{i}/sift_coeffs_10M.txt')
         output = process.read()
         print(output)
         process.close()
-
 
         # 记录结束时间
         end_time = time.time()
