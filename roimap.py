@@ -250,11 +250,6 @@ def roi_run_menu(path, sub):
                                 mat_file = f'{path}/Results/GlobalMap/FA/{i}_{alert_model}_FA_MAP.mat'  # 输出的MAT文件路径
                                 savemat(mat_file, {'NetworkMatrix': NetworkMatrix})  # 将变量保存为MAT文件 此处文件为完整的全脑图谱矩阵
 
-                                if brain_mask == '':
-                                    pass
-                                else:
-                                    pass
-
                         # 记录结束时间
                         end_time = time.time()
                         elapsed_time = end_time - start_timee
