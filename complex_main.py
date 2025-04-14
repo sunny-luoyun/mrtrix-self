@@ -4,7 +4,7 @@ from dt_r import run_menu
 from fiber_build import fiber
 from roimap import roi_run_menu
 from preprocess import prep
-
+from ROIFC import FC
 
 def load_specific_parameters(file_path, *keys):
     try:
@@ -30,7 +30,7 @@ def menu():
     print("2. 基于体素的弥散指标")
     print("3. FOD计算")
     print("4. 全脑纤维重建")
-    print("5. 基于种子点纤维重建（未完成）")
+    print("5. 基于种子点纤维重建")
     print("6. 基于纤维的脑网络构建")
     print("7. 使用说明")
     print("0. 返回上一级")
@@ -73,6 +73,8 @@ def option_fod(input_path, subjects):
 def option_brain_network(input_path, subjects):
     roi_run_menu(input_path, subjects)
 
+def option_roifiber(input_path, subjects):
+    FC(input_path,subjects)
 
 def help():
     print('---------------------使用说明------------------------------')
@@ -129,8 +131,8 @@ def main():
                 option_fod(input_path, subjects)
             elif choice == "6":
                 option_brain_network(input_path, subjects)
-        elif choice == "5":
-            print("该功能尚未完成！")
+            elif choice == "5":
+                option_roifiber(input_path,subjects)
         elif choice == "7":
             help()
         else:
