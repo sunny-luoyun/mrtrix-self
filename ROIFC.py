@@ -7,8 +7,7 @@ def FC(path, list):
     for i in list:
         start_timee = time.time()
         print(f"现在开始处理{i}")
-        '''flirt -in T1_coreg.nii.gz -ref MNI152.nii.gz -omat subject_to_MNI.mat'''
-        ''''''
+
         process = os.popen(
             f'')
         output = process.read()
