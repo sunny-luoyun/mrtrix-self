@@ -38,7 +38,7 @@ def check_for_updates():
             else:
                 print("已跳过更新。")
         else:
-            print("当前代码已是最新版本。")
+            print("当前代码已是最新版本,欢迎使用。")
     except subprocess.CalledProcessError as e:
         print(f"检查更新时出错：{e}")
     except Exception as e:
