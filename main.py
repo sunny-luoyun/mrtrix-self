@@ -15,7 +15,9 @@ def check_for_updates():
         subprocess.run(['git', 'fetch', '--quiet'], check=True)
         # 执行 git status 命令，检查是否有更新
         status_output = subprocess.check_output(['git', 'status'], text=True)
-        if "Your branch is up to date" in status_output:
+        print("Git status 输出：")
+        print(status_output)  # 打印输出内容，方便调试
+        if "up to date" in status_output or "最新" in status_output:  # 增加对中文的支持
             print("当前代码已是最新版本。")
         else:
             print("检测到更新！")
