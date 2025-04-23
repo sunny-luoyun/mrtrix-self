@@ -14,18 +14,29 @@ def check_for_updates():
         # 执行 git fetch 命令，获取远程仓库的最新状态
         subprocess.run(['git', 'fetch', '--quiet'], check=True)
 
-        # 使用 git rev-list 检查本地分支和远程分支之间的差异
-        rev_list_output = subprocess.check_output(
-            ['git', 'rev-list', '--count', 'origin/main..main'],
+        # 获取本地分支的最新提交哈希值
+        local_commit = subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'],
             text=True
         ).strip()
 
-        if rev_list_output == "0":
-            # 如果没有差异，表示本地分支已经是最新版本
+        # 获取远程分支的最新提交哈希值
+        remote_commit = subprocess.check_output(
+            ['git', 'rev-parse', 'origin/main'],
+            text=True
+        ).strip()
+
+        # 获取本地分支和远程分支的共同祖先提交哈希值
+        common_ancestor = subprocess.check_output(
+            ['git', 'merge-base', 'HEAD', 'origin/main'],
+            text=True
+        ).strip()
+
+        # 比较本地提交和远程提交
+        if local_commit == remote_commit:
             print("当前代码已是最新版本。")
-        else:
-            # 如果有差异，表示本地分支落后于远程分支
-            print(f"检测到更新！本地分支落后远程分支 {rev_list_output} 个提交。")
+        elif common_ancestor == local_commit:
+            print("检测到更新！本地分支落后于远程分支。")
             choice = input("是否更新到最新版本？(y/n): ").strip().lower()
             if choice == 'y':
                 print("正在更新...")
@@ -35,6 +46,8 @@ def check_for_updates():
                 exit(0)  # 更新完成后退出程序
             else:
                 print("已跳过更新。")
+        else:
+            print("无法确定更新状态，请手动检查。")
     except subprocess.CalledProcessError as e:
         print(f"检查更新时出错：{e}")
     except Exception as e:
