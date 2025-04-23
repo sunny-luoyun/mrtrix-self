@@ -23,12 +23,10 @@ def check_for_updates():
             # 如果代码已经是最新版本，但存在未跟踪的文件，直接忽略
             if "未跟踪的文件" in status_output or "Untracked files" in status_output:
                 print("未跟踪的文件存在，但代码已是最新版本。")
-                # 可选：自动清理未跟踪的文件
-                subprocess.run(['git', 'clean', '-fd'], check=True)
             else:
                 print("当前代码已是最新版本。")
-        else:
-            # 如果代码不是最新版本，提示用户更新
+        elif "您的分支落后于" in status_output or "Your branch is behind" in status_output:
+            # 如果代码需要更新，提示用户更新
             print("检测到更新！")
             choice = input("是否更新到最新版本？(y/n): ").strip().lower()
             if choice == 'y':
@@ -39,6 +37,8 @@ def check_for_updates():
                 exit(0)  # 更新完成后退出程序
             else:
                 print("已跳过更新。")
+        else:
+            print("无法确定更新状态，请手动检查。")
     except subprocess.CalledProcessError as e:
         print(f"检查更新时出错：{e}")
     except Exception as e:
