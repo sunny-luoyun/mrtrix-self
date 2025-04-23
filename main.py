@@ -1,5 +1,37 @@
-import os, complex_main, single_main, Correlation
+import os
+import subprocess
+import complex_main
+import single_main
+import Correlation
 
+def check_for_updates():
+    print("正在检查更新...")
+    try:
+        # 获取脚本所在的目录
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # 切换到脚本所在的目录
+        os.chdir(script_dir)
+        # 执行 git fetch 命令，获取远程仓库的最新状态
+        subprocess.run(['git', 'fetch', '--quiet'], check=True)
+        # 执行 git status 命令，检查是否有更新
+        status_output = subprocess.check_output(['git', 'status'], text=True)
+        if "Your branch is up to date" in status_output:
+            print("当前代码已是最新版本。")
+        else:
+            print("检测到更新！")
+            choice = input("是否更新到最新版本？(y/n): ").strip().lower()
+            if choice == 'y':
+                print("正在更新...")
+                # 执行 git pull 命令，更新代码
+                subprocess.run(['git', 'pull'], check=True)
+                print("更新完成！请重新运行程序。")
+                exit(0)  # 更新完成后退出程序
+            else:
+                print("已跳过更新。")
+    except subprocess.CalledProcessError as e:
+        print(f"检查更新时出错：{e}")
+    except Exception as e:
+        print(f"发生错误：{e}")
 
 def menu():
     print("\n======== dwi处理 ========")
@@ -12,16 +44,16 @@ def menu():
     print("===========================")
 
 def main():
+    check_for_updates()  # 在程序开始时检查更新
     while True:
         menu()
-        choice = input("请输入选项（0-8）：")
+        choice = input("请输入选项（0-5）：")
         if choice == "1":
             single_main.main()
         elif choice == "2":
             complex_main.main()
         elif choice == "3":
-            process = os.popen(
-                'mrview')
+            process = os.popen('mrview')
             output = process.read()
             print(output)
             process.close()
