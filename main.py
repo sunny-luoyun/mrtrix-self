@@ -23,6 +23,8 @@ def check_for_updates():
             # 如果代码已经是最新版本，但存在未跟踪的文件，直接忽略
             if "未跟踪的文件" in status_output or "Untracked files" in status_output:
                 print("未跟踪的文件存在，但代码已是最新版本。")
+                # 可选：自动清理未跟踪的文件
+                subprocess.run(['git', 'clean', '-fd'], check=True)
             else:
                 print("当前代码已是最新版本。")
         else:
