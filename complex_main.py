@@ -117,7 +117,7 @@ def main():
         choice = input("请输入选项（0-7）：")
         if choice == "0":
             break
-        elif choice in ["1", "2", "3", "4", "6"]:
+        elif choice in ["1", "2", "3", "4", "6", "5"]:
             input_path, subjects = get_input_path()
             if input_path is None:
                 continue
