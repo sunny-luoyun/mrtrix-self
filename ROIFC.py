@@ -53,7 +53,7 @@ def FC(path, list):
         # 开始纤维追踪
         print('开始纤维追踪')
         process = os.popen(
-            f'tckgen -act {path}/work/preprocess/{i}/T1_MNI_5tt.mif -backtrack -seed_sphere {x,y,z,r} -select 200k {path}/work/FOD/{i}/wmfod_norm_MNI.mif {path}/work/ROI_fiber/{i}/ROI_tracks.tck')
+            f'tckgen -act {path}/work/preprocess/{i}/T1_MNI_5tt.mif -backtrack -seed_sphere {x},{y},{z},{r} -select 200k {path}/work/FOD/{i}/wmfod_norm_MNI.mif {path}/work/ROI_fiber/{i}/ROI_tracks.tck')
         output = process.read()
         print(output)
         process.close()
