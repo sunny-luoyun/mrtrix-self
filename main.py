@@ -20,12 +20,13 @@ def check_for_updates():
 
         # 检查是否需要更新
         if "up to date" in status_output or "与上游分支一致" in status_output:
-            # 检查是否存在未跟踪的文件
+            # 如果代码已经是最新版本，但存在未跟踪的文件，直接忽略
             if "未跟踪的文件" in status_output or "Untracked files" in status_output:
                 print("未跟踪的文件存在，但代码已是最新版本。")
             else:
                 print("当前代码已是最新版本。")
         else:
+            # 如果代码不是最新版本，提示用户更新
             print("检测到更新！")
             choice = input("是否更新到最新版本？(y/n): ").strip().lower()
             if choice == 'y':
