@@ -13,21 +13,19 @@ def check_for_updates():
         os.chdir(script_dir)
         # 执行 git fetch 命令，获取远程仓库的最新状态
         subprocess.run(['git', 'fetch', '--quiet'], check=True)
-        # 执行 git status 命令，检查是否有更新
-        status_output = subprocess.check_output(['git', 'status'], text=True)
-        print("Git status 输出：")
-        print(status_output)  # 打印输出内容，方便调试
 
-        # 检查是否需要更新
-        if "up to date" in status_output or "与上游分支一致" in status_output:
-            # 如果代码已经是最新版本，但存在未跟踪的文件，直接忽略
-            if "未跟踪的文件" in status_output or "Untracked files" in status_output:
-                print("未跟踪的文件存在，但代码已是最新版本。")
-            else:
-                print("当前代码已是最新版本。")
-        elif "您的分支落后于" in status_output or "Your branch is behind" in status_output:
-            # 如果代码需要更新，提示用户更新
-            print("检测到更新！")
+        # 使用 git rev-list 检查本地分支和远程分支之间的差异
+        rev_list_output = subprocess.check_output(
+            ['git', 'rev-list', '--count', 'origin/main..main'],
+            text=True
+        ).strip()
+
+        if rev_list_output == "0":
+            # 如果没有差异，表示本地分支已经是最新版本
+            print("当前代码已是最新版本。")
+        else:
+            # 如果有差异，表示本地分支落后于远程分支
+            print(f"检测到更新！本地分支落后远程分支 {rev_list_output} 个提交。")
             choice = input("是否更新到最新版本？(y/n): ").strip().lower()
             if choice == 'y':
                 print("正在更新...")
@@ -37,8 +35,6 @@ def check_for_updates():
                 exit(0)  # 更新完成后退出程序
             else:
                 print("已跳过更新。")
-        else:
-            print("当前代码已是最新版本,欢迎使用。")
     except subprocess.CalledProcessError as e:
         print(f"检查更新时出错：{e}")
     except Exception as e:
