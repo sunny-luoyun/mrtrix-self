@@ -17,8 +17,14 @@ def check_for_updates():
         status_output = subprocess.check_output(['git', 'status'], text=True)
         print("Git status 输出：")
         print(status_output)  # 打印输出内容，方便调试
-        if "up to date" in status_output or "最新" in status_output:  # 增加对中文的支持
-            print("当前代码已是最新版本。")
+
+        # 检查是否需要更新
+        if "up to date" in status_output or "与上游分支一致" in status_output:
+            # 检查是否存在未跟踪的文件
+            if "未跟踪的文件" in status_output or "Untracked files" in status_output:
+                print("未跟踪的文件存在，但代码已是最新版本。")
+            else:
+                print("当前代码已是最新版本。")
         else:
             print("检测到更新！")
             choice = input("是否更新到最新版本？(y/n): ").strip().lower()
