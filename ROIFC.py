@@ -34,13 +34,14 @@ def FC(path, list):
                 print("输入格式错误，请重新输入")
                 continue
 
+        smooth = int(input('对结果进行高斯平滑（FWHM）单位mm，输入0则不进行平滑'))
+
         # 确认输入
         cho = input(f'输入的种子点方法为: {seed_method}回车继续，输入0返回上一级')
         if cho == "0":
             continue
         else:
             break
-
 
     start_time = time.time()
 
@@ -65,7 +66,17 @@ def FC(path, list):
         os.system(
             f'tckmap -contrast tdi -vox 1.0 -template {template_path} {path}/work/ROI_fiber/{i}/ROI_tracks.tck {path}/work/ROI_fiber/{i}/ROI_tracks.mif')
 
-        print('格式转换')
+        if smooth == 0:
+            break
+        else:
+            os.system(
+                f'tckmap -contrast tdi -vox 1.0 -template {template_path} -fwhm_tck {smooth} {path}/work/ROI_fiber/{i}/ROI_tracks.tck {path}/work/ROI_fiber/{i}/ROI_tracks_S{smooth}.mif')
+
+            os.makedirs(f'{path}/Results/ROI_track_S{smooth}_map', exist_ok=True)
+
+            os.system(
+                f'mrconvert {path}/work/ROI_fiber/{i}/ROI_tracks.mif {path}/Results/ROI_track_S{smooth}_map/{i}_ROI_TDI_MAP.nii')
+
         os.system(
             f'mrconvert {path}/work/ROI_fiber/{i}/ROI_tracks.mif {path}/Results/ROI_track_map/{i}_ROI_TDI_MAP.nii')
 
