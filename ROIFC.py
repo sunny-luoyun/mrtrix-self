@@ -60,7 +60,7 @@ def FC(path, list):
 
         print('转化为MAP图')
         process = os.popen(
-            f'tckmap -contrast tdi -vox 1.0 {path}/work/ROI_fiber/{i}/ROI_tracks.tck {path}/work/ROI_fiber/{i}/ROI_tracks.mif')
+            f'tckmap -contrast tdi -vox 1.0 -template {template_path} {path}/work/ROI_fiber/{i}/ROI_tracks.tck {path}/work/ROI_fiber/{i}/ROI_tracks.mif')
         output = process.read()
         print(output)
         process.close()
