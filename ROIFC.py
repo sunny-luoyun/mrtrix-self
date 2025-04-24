@@ -47,6 +47,7 @@ def FC(path, list):
 
     for i in list:
         start_timee = time.time()
+        '''
         print(f"现在开始处理{i}")
 
         # 创建必要的目录
@@ -65,7 +66,7 @@ def FC(path, list):
         print('转化为MAP图')
         os.system(
             f'tckmap -contrast tdi -vox 1.0 -template {template_path} {path}/work/ROI_fiber/{i}/ROI_tracks.tck {path}/work/ROI_fiber/{i}/ROI_tracks.mif')
-
+        '''
         if smooth == 0:
             break
         else:
@@ -76,10 +77,10 @@ def FC(path, list):
 
             os.system(
                 f'mrconvert {path}/work/ROI_fiber/{i}/ROI_tracks.mif {path}/Results/ROI_track_S{smooth}_map/{i}_ROI_TDI_MAP.nii')
-
+        '''
         os.system(
             f'mrconvert {path}/work/ROI_fiber/{i}/ROI_tracks.mif {path}/Results/ROI_track_map/{i}_ROI_TDI_MAP.nii')
-
+        '''
         # 记录处理时间
         end_time = time.time()
         elapsed_time = end_time - start_timee
