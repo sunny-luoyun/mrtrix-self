@@ -98,7 +98,7 @@ def main():
     """主程序入口"""
     options = {
         "1": lambda: generic_option(None, preprocess.prep),
-        "2": lambda: generic_option(None, fsl_cut.fsl),
+        "2": lambda: generic_option(),
         "3": lambda: generic_option(None, dt_r.run_menu),
         "4": lambda: generic_option(None, FoD.fod),
         "5": lambda: print("该功能尚未实现！"),
